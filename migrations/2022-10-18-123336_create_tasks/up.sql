@@ -1,0 +1,6 @@
+-- Your SQL goes here
+CREATE TABLE posts (
+  id VARCHAR PRIMARY KEY,
+  title TEXT NOT NULL,
+  done BOOLEAN NOT NULL DEFAULT FALSE
+)
