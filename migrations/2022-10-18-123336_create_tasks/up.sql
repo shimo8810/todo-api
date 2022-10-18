@@ -1,5 +1,5 @@
 -- Your SQL goes here
-CREATE TABLE posts (
+CREATE TABLE tasks (
   id VARCHAR PRIMARY KEY,
   title TEXT NOT NULL,
   done BOOLEAN NOT NULL DEFAULT FALSE

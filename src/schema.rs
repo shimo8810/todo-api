@@ -1,7 +1,7 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    posts (id) {
+    tasks (id) {
         id -> Varchar,
         title -> Text,
         done -> Bool,
