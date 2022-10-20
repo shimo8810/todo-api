@@ -1,6 +1,6 @@
 use actix_web::HttpResponse;
-use actix_web::{get, post, web, Error, Responder};
-use diesel::RunQueryDsl;
+use actix_web::{delete, get, post, web, Error, Responder};
+use diesel::{QueryDsl, RunQueryDsl};
 use uuid::Uuid;
 
 use crate::db::DbPool;
@@ -48,4 +48,23 @@ async fn add_task(
     .await?;
 
     Ok(HttpResponse::Ok().json(task))
+}
+
+#[delete("/tasks/{task_id}")]
+pub async fn delete_task(
+    pool: web::Data<DbPool>,
+    id: web::Path<String>,
+) -> Result<HttpResponse, Error> {
+    let id = id.into_inner();
+
+    web::block(move || {
+        let mut conn = pool.get().unwrap();
+        diesel::delete(tasks::table.find(id))
+            .execute(&mut conn)
+            .unwrap();
+    })
+    .await
+    .unwrap();
+
+    Ok(HttpResponse::Ok().body("delete"))
 }
