@@ -1,5 +1,6 @@
 use actix_web::HttpResponse;
-use actix_web::{delete, get, post, web, Error, Responder};
+use actix_web::{delete, get, post, put, web, Error, Responder};
+use diesel::prelude::*;
 use diesel::{QueryDsl, RunQueryDsl};
 use uuid::Uuid;
 
@@ -67,4 +68,24 @@ pub async fn delete_task(
     .unwrap();
 
     Ok(HttpResponse::Ok().body("delete"))
+}
+
+#[put("/tasks/{task_id}")]
+pub async fn update_task(
+    pool: web::Data<DbPool>,
+    id: web::Path<String>,
+) -> Result<HttpResponse, Error> {
+    let id = id.into_inner();
+
+    println!("{}", id);
+    web::block(move || {
+        let mut conn = pool.get().unwrap();
+        diesel::update(tasks::table.find(id))
+            .set(tasks::done.eq(true))
+            .get_result::<Task>(&mut conn)
+            .unwrap();
+    })
+    .await?;
+
+    Ok(HttpResponse::Ok().body("update"))
 }
